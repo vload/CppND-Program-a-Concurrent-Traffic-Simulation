@@ -1,19 +1,21 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
+#include "TrafficObject.h"
+#include <opencv2/core.hpp>
 #include <string>
 #include <vector>
-#include <opencv2/core.hpp>
-#include "TrafficObject.h"
 
-class Graphics
-{
+class Graphics {
 public:
     // constructor / desctructor
 
     // getters / setters
     void setBgFilename(std::string filename) { _bgFilename = filename; }
-    void setTrafficObjects(std::vector<std::shared_ptr<TrafficObject>> &trafficObjects) { _trafficObjects = trafficObjects; };
+    void setTrafficObjects(
+        std::vector<std::shared_ptr<TrafficObject>>& trafficObjects) {
+        _trafficObjects = trafficObjects;
+    };
 
     // typical behaviour methods
     void simulate();
@@ -30,4 +32,4 @@ private:
     std::vector<cv::Mat> _images;
 };
 
-#endif
+#endif // GRAPHICS_H

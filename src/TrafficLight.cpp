@@ -47,9 +47,10 @@ void TrafficLight::simulate() {
 // virtual function which is executed in a thread
 void TrafficLight::cycleThroughPhases() {
     // The cycle duration should be a random value between 4 and 6 seconds.
-    auto uniform = std::uniform_real_distribution<double>(4, 6);
-    std::default_random_engine engine;
-    auto target_cycle_duration = std::chrono::duration<double>(uniform(engine));
+    auto uniform = std::uniform_int_distribution<>(4, 6);
+    std::random_device rd;
+    std::mt19937 engine(rd());
+    auto target_cycle_duration = uniform(engine);
 
     auto stop_watch = Clock::now();
 
@@ -58,8 +59,9 @@ void TrafficLight::cycleThroughPhases() {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
         // measure the time between two loop cycles
-        auto diff_time =
-            std::chrono::duration<double>(Clock::now() - stop_watch);
+        auto diff_time = std::chrono::duration_cast<std::chrono::seconds>(
+            Clock::now() - stop_watch)
+                             .count();
 
         if(diff_time > target_cycle_duration) {
             // toggles the current phase of the traffic light between red and
@@ -72,9 +74,8 @@ void TrafficLight::cycleThroughPhases() {
             // send an update method to the message queue using move semantics.
             _msg_q.send(std::move(getCurrentPhase()));
 
-            target_cycle_duration =
-                std::chrono::duration<double>(uniform(engine));
-            stop_watch = Clock::now();
+            target_cycle_duration = uniform(engine);
+            stop_watch            = Clock::now();
         }
     }
 }
